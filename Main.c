@@ -147,7 +147,8 @@ int main()
             break;
 
         case 4:
-            exit(0); // Sai do programa
+            printf("Obrigado por utilizar o sistema!.");
+            return 0;
             break;
 
         default:
