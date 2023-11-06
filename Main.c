@@ -10,51 +10,59 @@ void registro()
     char nome[40];
     char sobrenome[40];
     char cargo[40];
+    char validacao[2]; // Deve ter espaço para o caractere e o '\0'
 
-    printf("Digite o CPF: ");
-    scanf("%s", cpf);
+    do
+    {
+        printf("Digite o CPF: ");
+        scanf("%39s", cpf); // %39s para prevenir buffer overflow
 
-    strcpy(arquivo, cpf);
+        // Forma o nome do arquivo baseado no CPF e adiciona a extensão .txt
+        snprintf(arquivo, sizeof(arquivo), "%s.txt", cpf);
 
-    FILE *file;
-    file = fopen(arquivo, "w");
-    fprintf(file, cpf);
-    fclose(file);
+        // Tenta abrir o arquivo para escrita
+        FILE *file = fopen(arquivo, "w");
+        if (file == NULL)
+        {
+            perror("Não foi possível abrir o arquivo");
+            exit(EXIT_FAILURE);
+        }
 
-    file = fopen(arquivo, "a");
-    fprintf(file, ",");
-    fclose(file);
+        // Escreve o CPF no arquivo e fecha
+        fprintf(file, "%s,", cpf);
+        fclose(file);
 
-    printf("Digite o Nome: ");
-    scanf("%s", nome);
+        // Continua para os outros campos
+        printf("Digite o Nome: ");
+        scanf("%39s", nome);
+        printf("Digite o Sobrenome: ");
+        scanf("%39s", sobrenome);
+        printf("Digite o Cargo: ");
+        scanf("%39s", cargo);
 
-    file = fopen(arquivo, "a");
-    fprintf(file, nome);
-    fclose(file);
+        // Abre o arquivo para append e escreve os outros dados
+        file = fopen(arquivo, "a");
+        if (file == NULL)
+        {
+            perror("Não foi possível abrir o arquivo");
+            exit(EXIT_FAILURE);
+        }
+        fprintf(file, "%s,%s,%s", nome, sobrenome, cargo);
+        fclose(file);
 
-    file = fopen(arquivo, "a");
-    fprintf(file, ",");
-    fclose(file);
+        // Pergunta se o usuário quer inserir mais
+        printf("Deseja inserir mais nomes? (s/n): ");
+        scanf("%1s", validacao); // %1s para ler apenas um caractere
 
-    printf("Digite o Sobrenome: ");
-    scanf("%s", sobrenome);
+        // Verifica a resposta
+        if (validacao[0] == 'n' || validacao[0] == 'N')
+        {
+            break; // Sai do loop se a resposta for 'n' ou 'N'
+        }
 
-    file = fopen(arquivo, "a");
-    fprintf(file, sobrenome);
-    fclose(file);
+        system("pause");
 
-    file = fopen(arquivo, "a");
-    fprintf(file, ",");
-    fclose(file);
-
-    printf("Digite o Cargo: ");
-    scanf("%s", cargo);
-
-    file = fopen(arquivo, "a");
-    fprintf(file, cargo);
-    fclose(file);
-
-    system("pause");
+    } while (1); // Loop infinito, controlado pela resposta do usuário
 }
 
 void consulta()
